@@ -57,9 +57,13 @@ and datepart(year,timestamp) = 2017
 and datepart(month,timestamp) = 04
 
 select s.timestamp
+		,s.searchphrase
 		,nextresult.numberOfResults
 		,s.userid	
+		,u.name as username
+		,u.organizationid
 from #searchphrase s
+	inner join [user] u on u.id = s.userid
 outer apply
 	(
 	select top 1 message,timestamp,numberOfResults
@@ -67,4 +71,5 @@ outer apply
 	where timestamp > s.timestamp and userid = cast(s.userid as int)
 	order by timestamp
 	) nextresult
+where u.organizationid = 28
 order by userid,timestamp
